@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.awon.alarm.Alarm;
+import com.awon.alarm.AlarmReceiver;
 import com.awon.alarm.R;
+import com.awon.alarm.data.tables.Alarms;
+import com.awon.alarm.repository.AlarmRepository;
 
 import java.util.Calendar;
 import java.util.Timer;
@@ -24,18 +26,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     long time = 0;
     private AlarmManager am;
     private PendingIntent pi;
+    private int alarmId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        alarmId = getIntent().getIntExtra("alarmId", 0);
+
         button = (Button) findViewById(R.id.button);
         timePicker = (TimePicker) findViewById(R.id.time_picker);
-
-        am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(MainActivity.this, Alarm.class);
-        pi = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
         button.setOnClickListener(this);
     }
@@ -48,10 +49,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         calendar.set(Calendar.HOUR_OF_DAY, alarmHour);
         calendar.set(Calendar.MINUTE, alarmMinute);
 
+        am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        pi = PendingIntent.getBroadcast(MainActivity.this, alarmId, intent, 0);
+
         Toast.makeText(MainActivity.this, "Time is set", Toast.LENGTH_SHORT).show();
 
-        am.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pi);
-        //am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+        //am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+        final Alarms alarms = new Alarms();
+        alarms.setName("");
+        alarms.setPendingId(alarmId);
+        alarms.setTime(calendar.getTimeInMillis() + "");
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                AlarmRepository.saveAlarm(alarms, MainActivity.this);
+            }
+        };
+        new Thread(runnable).start();
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
     }
 
     @Override

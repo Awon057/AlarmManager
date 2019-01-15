@@ -11,13 +11,17 @@ import android.view.MenuItem;
 
 import com.awon.alarm.R;
 import com.awon.alarm.adapter.AlarmListAdapter;
+import com.awon.alarm.data.tables.Alarms;
 import com.awon.alarm.repository.AlarmRepository;
+
+import java.util.ArrayList;
 
 public class AlarmListActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private LinearLayoutManager layoutManager;
     private AlarmListAdapter adapter;
+    private ArrayList<Alarms> records;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,9 @@ public class AlarmListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_alarm:
-                startActivity(new Intent(AlarmListActivity.this, MainActivity.class));
+                Intent intent = new Intent(AlarmListActivity.this, MainActivity.class);
+                intent.putExtra("alarmId", records.size() + 1);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);

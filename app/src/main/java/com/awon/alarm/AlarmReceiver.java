@@ -9,7 +9,7 @@ import com.awon.alarm.activity.StopAlarmActivity;
 /**
  * Created by Md.Awon-Uz-Zaman on 1/9/2019.
  */
-public class Alarm extends BroadcastReceiver {
+public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         context.startActivity(new Intent(context, StopAlarmActivity.class));
