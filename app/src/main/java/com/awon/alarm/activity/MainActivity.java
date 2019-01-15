@@ -8,11 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.awon.alarm.AlarmReceiver;
+import com.awon.alarm.util.AlarmReceiver;
 import com.awon.alarm.R;
 import com.awon.alarm.data.tables.Alarms;
 import com.awon.alarm.repository.AlarmRepository;
@@ -30,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PendingIntent pi;
     private int alarmId;
     private EditText name;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +49,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Integer alarmHour = timePicker.getCurrentHour();
         Integer alarmMinute = timePicker.getCurrentMinute();
 
-        final Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, alarmHour);
         calendar.set(Calendar.MINUTE, alarmMinute);
 
         am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        intent = new Intent(MainActivity.this, AlarmReceiver.class);
         pi = PendingIntent.getBroadcast(MainActivity.this, alarmId, intent, 0);
-
-        Toast.makeText(MainActivity.this, "Time is set", Toast.LENGTH_SHORT).show();
-
         //am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
 
         if (name != null && name.getText().toString().length() > 0) {
@@ -66,14 +63,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             alarms.setName(name.getText().toString());
             alarms.setPendingId(alarmId);
             alarms.setTime(calendar.getTimeInMillis() + "");
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    AlarmRepository.saveAlarm(alarms, MainActivity.this);
-                }
-            };
-            new Thread(runnable).start();
-            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+            AlarmRepository.saveAlarm(alarms, MainActivity.this);
+
+            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pi);
+            Toast.makeText(MainActivity.this, "Time is set", Toast.LENGTH_SHORT).show();
             finish();
         } else Toast.makeText(MainActivity.this, "Please give name", Toast.LENGTH_SHORT).show();
     }

@@ -3,6 +3,7 @@ package com.awon.alarm.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.awon.alarm.R;
 import com.awon.alarm.data.tables.Alarms;
+import com.awon.alarm.util.PassAlarm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +23,12 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
 
     private Context context;
     private List<Alarms> alarms;
+    private PassAlarm passAlarm;
 
-    public void setRecords(List<Alarms> alarms, Context context) {
+    public void setRecords(List<Alarms> alarms, Context context, PassAlarm passAlarm) {
         this.context = context;
         this.alarms = alarms;
+        this.passAlarm = passAlarm;
         notifyDataSetChanged();
     }
 
@@ -38,7 +42,8 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.alarmName.setText(alarms.get(i).getName());
-        viewHolder.alarmTime.setText(alarms.get(i).getTime());
+        String time = DateUtils.formatDateTime(context, Long.parseLong(alarms.get(i).getTime()), DateUtils.FORMAT_SHOW_TIME);
+        viewHolder.alarmTime.setText(time);
     }
 
     @Override
@@ -65,7 +70,7 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
+                    passAlarm.passAlarm(alarms.get(getAdapterPosition()));
                     return false;
                 }
             });
