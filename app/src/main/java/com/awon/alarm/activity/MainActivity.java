@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AlarmManager am;
     private PendingIntent pi;
     private int alarmId;
+    private EditText name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         button = (Button) findViewById(R.id.button);
         timePicker = (TimePicker) findViewById(R.id.time_picker);
+        name = (EditText) findViewById(R.id.name);
 
         button.setOnClickListener(this);
     }
@@ -56,18 +60,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(MainActivity.this, "Time is set", Toast.LENGTH_SHORT).show();
 
         //am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
-        final Alarms alarms = new Alarms();
-        alarms.setName("");
-        alarms.setPendingId(alarmId);
-        alarms.setTime(calendar.getTimeInMillis() + "");
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                AlarmRepository.saveAlarm(alarms, MainActivity.this);
-            }
-        };
-        new Thread(runnable).start();
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+
+        if (name != null && name.getText().toString().length() > 0) {
+            final Alarms alarms = new Alarms();
+            alarms.setName(name.getText().toString());
+            alarms.setPendingId(alarmId);
+            alarms.setTime(calendar.getTimeInMillis() + "");
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    AlarmRepository.saveAlarm(alarms, MainActivity.this);
+                }
+            };
+            new Thread(runnable).start();
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+            finish();
+        } else Toast.makeText(MainActivity.this, "Please give name", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -15,13 +15,14 @@ import com.awon.alarm.data.tables.Alarms;
 import com.awon.alarm.repository.AlarmRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AlarmListActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private LinearLayoutManager layoutManager;
     private AlarmListAdapter adapter;
-    private ArrayList<Alarms> records;
+    private List<Alarms> records;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +44,17 @@ public class AlarmListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        /*records = AlarmRepository.getAlarms(AlarmListActivity.this);
-        if (records != null)
-            if (records.size() > 0) {
-                adapter.setRecords(records, AllEmpReportActivity.this);
-            }*/
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                records = AlarmRepository.getAlarms(AlarmListActivity.this);
+                if (records != null)
+                    if (records.size() > 0) {
+                        adapter.setRecords(records, AlarmListActivity.this);
+                    }
+            }
+        };
+        new Thread(runnable).start();
     }
 
     @Override
