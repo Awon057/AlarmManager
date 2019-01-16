@@ -17,10 +17,13 @@ import java.util.List;
 @Dao
 public interface AlarmDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insertAlarm(Alarms alarm);
+    void insertAlarm(Alarms alarm);
 
     @Query("SELECT * FROM Alarms")
-    public List<Alarms> getAlarms();
+    List<Alarms> getAlarms();
+
+    @Query("SELECT * FROM Alarms WHERE pendingId LIKE :id ")
+    Alarms getAlarm(String id);
 
     @Delete
     void deleteAlarm(Alarms alarms);

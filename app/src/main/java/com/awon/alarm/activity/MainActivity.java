@@ -52,9 +52,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, alarmHour);
         calendar.set(Calendar.MINUTE, alarmMinute);
+        calendar.set(Calendar.SECOND, 00);
 
         am = (AlarmManager) getSystemService(ALARM_SERVICE);
         intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        intent.putExtra("Id", alarmId);
         pi = PendingIntent.getBroadcast(MainActivity.this, alarmId, intent, 0);
         //am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
 

@@ -7,6 +7,7 @@ import com.awon.alarm.data.AppDatabase;
 import com.awon.alarm.data.tables.Alarms;
 import com.awon.alarm.model.AlarmModel;
 import com.awon.alarm.util.GetAlarms;
+import com.awon.alarm.util.PassAlarm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,17 @@ public class AlarmRepository {
             public void run() {
                 instance = AppDatabase.getInstance(context);
                 instance.userDao().deleteAlarm(a);
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    public static void getAlarm(final Context context, final int id, final PassAlarm passAlarm) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                instance = AppDatabase.getInstance(context);
+                passAlarm.passAlarm(instance.userDao().getAlarm(id + ""));
             }
         };
         new Thread(runnable).start();

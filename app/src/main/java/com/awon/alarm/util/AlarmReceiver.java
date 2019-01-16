@@ -14,6 +14,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent i = new Intent(context, StopAlarmActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra("Id",intent.getIntExtra("Id", 0));
         context.startActivity(i);
     }
 }
