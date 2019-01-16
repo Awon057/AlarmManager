@@ -3,6 +3,8 @@ package com.awon.alarm.activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.design.button.MaterialButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,10 +23,9 @@ import java.util.Timer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button button;
+    private MaterialButton button;
     private TimePicker timePicker;
     Timer t = new Timer();
-    long time = 0;
     private AlarmManager am;
     private PendingIntent pi;
     private int alarmId;
@@ -36,9 +37,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Alarms");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         alarmId = getIntent().getIntExtra("alarmId", 0);
 
-        button = (Button) findViewById(R.id.button);
+        button = (MaterialButton) findViewById(R.id.button);
         timePicker = (TimePicker) findViewById(R.id.time_picker);
         name = (EditText) findViewById(R.id.name);
 
