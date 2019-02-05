@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Alarms");
+        actionBar.setTitle("Set Alarm");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         alarmId = getIntent().getIntExtra("alarmId", 0);

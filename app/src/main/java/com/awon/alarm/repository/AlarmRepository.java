@@ -41,12 +41,13 @@ public class AlarmRepository {
         new Thread(runnable).start();
     }
 
-    public static void deleteAlarm(final Alarms a, final Context context) {
+    public static void deleteAlarm(final Alarms a, final Context context, final GetAlarms getAlarms) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 instance = AppDatabase.getInstance(context);
                 instance.userDao().deleteAlarm(a);
+                getAlarms.getAlarms(instance.userDao().getAlarms());
             }
         };
         new Thread(runnable).start();
@@ -58,6 +59,17 @@ public class AlarmRepository {
             public void run() {
                 instance = AppDatabase.getInstance(context);
                 passAlarm.passAlarm(instance.userDao().getAlarm(id + ""));
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    public static void updateAlarm(final Context context, final Alarms a) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                instance = AppDatabase.getInstance(context);
+                instance.userDao().updateAlarm(a.getName(), a.getTime(), a.getId() + "");
             }
         };
         new Thread(runnable).start();

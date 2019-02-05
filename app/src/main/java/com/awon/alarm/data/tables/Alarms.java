@@ -3,11 +3,15 @@ package com.awon.alarm.data.tables;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
 /**
  * Created by Md.Awon-Uz-Zaman on 1/15/2019.
  */
 @Entity
-public class Alarms  {
+public class Alarms implements Serializable {
     @PrimaryKey(autoGenerate = true)
     int id;
     String name;

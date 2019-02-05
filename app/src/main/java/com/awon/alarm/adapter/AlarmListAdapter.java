@@ -24,11 +24,13 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
     private Context context;
     private List<Alarms> alarms;
     private PassAlarm passAlarm;
+    private PassAlarm editAlarm;
 
-    public void setRecords(List<Alarms> alarms, Context context, PassAlarm passAlarm) {
+    public void setRecords(List<Alarms> alarms, Context context, PassAlarm passAlarm, PassAlarm editAlarm) {
         this.context = context;
         this.alarms = alarms;
         this.passAlarm = passAlarm;
+        this.editAlarm = editAlarm;
         notifyDataSetChanged();
     }
 
@@ -61,12 +63,12 @@ public class AlarmListAdapter extends RecyclerView.Adapter<AlarmListAdapter.View
             super(itemView);
             alarmName = (TextView) itemView.findViewById(R.id.alarm_name);
             alarmTime = (TextView) itemView.findViewById(R.id.alarm_time);
-            /*itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    editAlarm.passAlarm(alarms.get(getAdapterPosition()));
                 }
-            });*/
+            });
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

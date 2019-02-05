@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.awon.alarm.R;
 import com.awon.alarm.adapter.AlarmListAdapter;
@@ -86,9 +87,18 @@ public class AlarmListActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         records = alarmsList;
-                        adapter.setRecords(alarmsList, AlarmListActivity.this, passAlarm);
+                        adapter.setRecords(alarmsList, AlarmListActivity.this, passAlarm, editAlarm);
                     }
                 });
+        }
+    };
+
+    PassAlarm editAlarm = new PassAlarm() {
+        @Override
+        public void passAlarm(Alarms a) {
+            Intent intent = new Intent(AlarmListActivity.this, EditAlarm.class);
+            intent.putExtra("alarm", a);
+            startActivity(intent);
         }
     };
 
@@ -118,12 +128,10 @@ public class AlarmListActivity extends AppCompatActivity {
     }
 
     private void deleteAlarm(final Alarms a) {
-        AlarmRepository.deleteAlarm(a, AlarmListActivity.this);
+        AlarmRepository.deleteAlarm(a, AlarmListActivity.this, getAlarms);
         Intent intent = new Intent(this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(this, a.getPendingId(), intent, 0);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-
-        refreshList();
     }
 }
